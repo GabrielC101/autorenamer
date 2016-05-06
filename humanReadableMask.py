@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 
 #from /usr/src/linux/include/linux/inotify.h
@@ -103,12 +103,20 @@ _FLAG_TO_HUMAN = [
 ]
 
 class InotifyMask(object):
+    
+    
     def __init__(self, mask):
-        self.mask = mask
-        self.readable_mask = self.readableMask(self.mask)
-        self.human_readable_mask = self.humanReadableMask(self.mask)
-
-    def humanReadableMask(self, mask):
+        self._mask = mask
+        #self.readable_mask = self.readableMask(self.mask)
+        #self.human_readable_mask = self.humanReadableMask(self.mask)
+	
+	
+	@property
+	def mask(self):
+		return self._mask
+	
+	@property
+    def humanReadableMask(self, self.mask):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
@@ -118,8 +126,8 @@ class InotifyMask(object):
             if k & mask:
                 s.append(READABLE_DICT[MASK_DICT[k]])
         return s
-
-    def readableMask(self, mask):
+	@property
+    def readableMask(self, self.mask):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
