@@ -1,15 +1,7 @@
 import inotify.adapters
 from os import path
-from twisted.python.filepath import FilePath
-from humanReadableMask import InotifyMask
-import datetime
 
-class InotifyEvent(object):
-    def __init__(self, mask, file_changed, watch_path):
-        self.mask = InotifyMask(mask)
-        self.file_changed = FilePath(file_changed)
-        self.watch_path = FilePath(watch_path)
-        self.time = datetime.datetime.now()
+
 
 class InotifyFileMonitorBase(object):
     def __init__(self, initial_watch_path='.'):
