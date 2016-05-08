@@ -10,8 +10,8 @@
 # All rights reserved.
 
 
-from inotifier import InotifyFileMonitorBase
-from isFileOpen import monitorIsFileOpen, isFileOpen
+from inotify.monitor import InotifyFileMonitorBase
+from process_query import open_files
 from twisted.python import filepath
 import os
 import sys
@@ -54,7 +54,7 @@ class Renamer(InotifyFileMonitorBase):
         if inotify_event.file_changed.exists():
             log_inotify_event(inotify_event)
 
-    def On_IN_CREATE(self, inotify_event):
+    def on_IN_CREATE(self, inotify_event):
         #log_inotify_event(inotify_event)
         sep = '---'
 
@@ -68,17 +68,17 @@ class Renamer(InotifyFileMonitorBase):
 
         #print created_dict
 
-    def On_IN_CLOSE_WRITE(self, inotify_event):
+    def on_IN_CLOSE_WRITE(self, inotify_event):
         if inotify_event.file_changed.exists():
             closed_write_list.append(inotify_event.file_changed.getInodeNumber())
 
-    def On_IN_MOVED_FROM(self, inotify_event):
+    def on_IN_MOVED_FROM(self, inotify_event):
         #log_inotify_event(inotify_event)
         pass
-    def On_IN_MOVED_TO(self, inotify_event):
+    def on_IN_MOVED_TO(self, inotify_event):
         #log_inotify_event(inotify_event)
         pass
-    def On_IN_ATTRIB(self, inotify_event):
+    def on_IN_ATTRIB(self, inotify_event):
         if inotify_event.file_changed.exists():
             inode_num = inotify_event.file_changed.getInodeNumber()
             if inode_num not in changed_list:
