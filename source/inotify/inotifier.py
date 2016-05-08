@@ -73,64 +73,64 @@ class InotifyFileMonitorBase(object):
         pass
 
 
-    def On_IN_ACCESS(self, inotify_event):
+    def on_IN_ACCESS(self, inotify_event):
         pass
 
-    def On_IN_MODIFY(self, inotify_event):
+    def on_IN_MODIFY(self, inotify_event):
         pass
 
-    def On_IN_ATTRIB(self, inotify_event):
+    def on_IN_ATTRIB(self, inotify_event):
         pass
 
-    def On_IN_CLOSE_WRITE(self, inotify_event):
+    def on_IN_CLOSE_WRITE(self, inotify_event):
         pass
 
-    def On_IN_CLOSE_NOWRITE(self, inotify_event):
+    def on_IN_CLOSE_NOWRITE(self, inotify_event):
         pass
 
-    def On_IN_OPEN(self, inotify_event):
+    def on_IN_OPEN(self, inotify_event):
         pass
 
-    def On_IN_MOVED_FROM(self, inotify_event):
+    def on_IN_MOVED_FROM(self, inotify_event):
         pass
 
-    def On_IN_MOVED_TO(self, inotify_event):
+    def on_IN_MOVED_TO(self, inotify_event):
         pass
 
-    def On_IN_CREATE(self, inotify_event):
+    def on_IN_CREATE(self, inotify_event):
         pass
 
-    def On_IN_DELETE(self, inotify_event):
+    def on_IN_DELETE(self, inotify_event):
         pass
 
-    def On_IN_DELETE_SELF(self, inotify_event):
+    def on_IN_DELETE_SELF(self, inotify_event):
         pass
 
-    def On_IN_MOVE_SELF(self, inotify_event):
+    def on_IN_MOVE_SELF(self, inotify_event):
         pass
 
-    def On_IN_UNMOUNT(self, inotify_event):
+    def on_IN_UNMOUNT(self, inotify_event):
         pass
 
-    def On_IN_Q_OVERFLOW(self, inotify_event):
+    def on_IN_Q_OVERFLOW(self, inotify_event):
         pass
 
-    def On_IN_IGNORED(self, inotify_event):
+    def on_IN_IGNORED(self, inotify_event):
         pass
 
-    def On_IN_ONLYDIR(self, inotify_event):
+    def on_IN_ONLYDIR(self, inotify_event):
         pass
 
-    def On_IN_DONT_FOLLOW(self, inotify_event):
+    def on_IN_DONT_FOLLOW(self, inotify_event):
         pass
 
-    def On_IN_MASK_ADD(self, inotify_event):
+    def on_IN_MASK_ADD(self, inotify_event):
         pass
 
-    def On_IN_ISDIR(self, inotify_event):
+    def on_IN_ISDIR(self, inotify_event):
         pass
 
-    def On_IN_ONESHOT(self, inotify_event):
+    def on_IN_ONESHOT(self, inotify_event):
         pass
 
 

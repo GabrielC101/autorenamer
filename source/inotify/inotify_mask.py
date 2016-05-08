@@ -113,12 +113,8 @@ _FLAG_TO_HUMAN = [
 
 class InotifyMask(object):
 
-
     def __init__(self, mask):
         self._mask = mask
-        #self.readable_mask = self.readableMask(self.mask)
-        #self.human_readable_mask = self.humanReadableMask(self.mask)
-
 
     @property
     def mask(self):
@@ -135,6 +131,7 @@ class InotifyMask(object):
             if k & self.mask:
                 s.append(READABLE_DICT[MASK_DICT[k]])
         return s
+
     @property
     def readableMask(self):
         """
