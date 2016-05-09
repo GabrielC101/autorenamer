@@ -9,112 +9,71 @@
 #
 # All rights reserved.
 from __future__ import absolute_import
-from inotifers.monitor import InotifyFileMonitorBase
-from autorenamer.filepath import FilePath
-from autorenamer.inotifers.event import InotifyEvent
-from autorenamer.process_query import open_files
 
 import os
 import sys
 
-sep = '---'
 
-event_log_dict = {}
-
-created_dict = {}
-
-closed_write_list = []
-
-changed_list = []
-
-def log_inotify_event(inotify_event):
-    global event_log_dict
-    file_changed = inotify_event.file_changed.path
-    if inotify_event.file_changed.exists():
-        inode_changed = inotify_event.file_changed.getInodeNumber()
-    else:
-        inode_changed = None
-    type_of_change = inotify_event.mask.readable_mask[0]
-    if inode_changed in event_log_dict:
-        event_log_dict[inode_changed].append((file_changed,type_of_change))
-    else:
-        event_log_dict[inode_changed] = []
-        event_log_dict[inode_changed].append((file_changed,type_of_change))
-
-    #print event_log_dict
+from inotifers.monitor import InotifyFileMonitorBase
+from autorenamer.filepath import FilePath
+from autorenamer.persistence.set_directory import initialize_autorenamer_dir
+from autorenamer.persistence.data_file import store_created_file
+from autorenamer.persistence.data_file import get_created_file
 
 
+def get_time_string(time_obj):
+    time_string = str(time_obj.year) + '-' + \
+    str(time_obj.month) + '-' + \
+    str(time_obj.day) + '_' + \
+    str(time_obj.hour) + '-' + \
+    str(time_obj.minute) + '-' + \
+    str(time_obj.second)
+
+    return time_string
 
 
 class Renamer(InotifyFileMonitorBase):
 
-
-    def allEvents(self, inotify_event):
-        pass
-        #if inotify_event.file_changed.exists():
-            #log_inotify_event(inotify_event)
+    def __init__(self, initial_watch_path='.'):
+        super(Renamer, self).__init__(initial_watch_path)
+        initialize_autorenamer_dir()
 
     def on_IN_CREATE(self, inotify_event):
-        path = inotify_event.file.file_name
-        inode = inotify_event.file.inode_num
-        print 'created: ' + path + ' ' + str(inode)
+        inode_num = inotify_event.file.inode_num
+        created_path = inotify_event.file.absolute_path
 
-        #sep = '---'
-
-        #created_dict[inotify_event.file_changed.getInodeNumber()] = \
-        #str(inotify_event.time.year) + '-' + \
-        #str(inotify_event.time.month) + '-' + \
-        #str(inotify_event.time.day) + '---' + \
-        #str(inotify_event.time.hour) + '-' + \
-        #str(inotify_event.time.minute) + '-' + \
-        #str(inotify_event.time.second)
-
-
+        time_string = get_time_string(inotify_event.time)
+        watched_dir_obj = inotify_event.file.parent_directory
+        watched_dir = watched_dir_obj.absolute_path
+        store_created_file(inode_num, created_path, time_string, watched_dir)
 
     def on_IN_CLOSE_WRITE(self, inotify_event):
         print 'close write'
-        #if inotify_event.file_changed.exists():
-            #closed_write_list.append(inotify_event.file_changed.getInodeNumber())
+        inode_num = str(inotify_event.file.inode_num)
+        print inode_num
+        a_dict = get_created_file(inode_num)
+        print a_dict
+        watched_dir = a_dict['watched_dir']
+        print watched_dir
+        file_list = os.listdir(watched_dir)
+        file_list = [os.path.join(watched_dir, f) for f in file_list]
+        print file_list
+        file_dict = {}
+        for f in file_list:
+            f_obj = FilePath(f)
+            name = f_obj.file_name
+            inode_num_m = str(f_obj.inode_num)
+            print type(inode_num_m)
+            print type (name)
+            file_dict[inode_num_m] = name
+        print file_dict
 
-    def on_IN_MOVED_FROM(self, inotify_event):
-        print 'moved from'
-
-    def on_IN_MOVED_TO(self, inotify_event):
-        print 'moved to'
-    def on_IN_ATTRIB(self, inotify_event):
-        print 'attrib'
-        #if inotify_event.file_changed.exists():
-            #inode_num = inotify_event.file_changed.getInodeNumber()
-            #if inode_num not in changed_list:
-                #if '---' not in inotify_event.file_changed.path:
-                    #t = True
-
-                    #file_name = inotify_event.file_changed.path
-
-                    #if inode_num not in changed_list:
-                        #while t:
-                            #if isFileOpen(file_name) == False:
-                                #self.rename(file_name, created_dict[inode_num])
-                                #return
-
-
-    def change(self, inotify_event):
-        pass
-
-    def rename(self, file_name, created_time_string):
-        #file_name = filepath.FilePath(file_name)
-        #b_name = file_name.basename()
-        #par = file_name.parent()
-        #new_path = filepath.FilePath(par.path + '/' + created_time_string + sep + b_name)
-
-        #os.rename(file_name.path, new_path.path)
-
-        #print file_name.path
-        #print new_path.path
-        #if new_path.exists():
-            #changed_list.append(new_path.getInodeNumber())
-
-        pass
+        file_name = file_dict[inode_num]
+        from_path = os.path.join(watched_dir, file_name)
+        to_path = os.path.join(watched_dir, a_dict['time_string'] + '_'+ file_name)
+        print from_path
+        print to_path
+        os.rename(from_path, to_path)
 
 
 def main(folder_to_monitor):

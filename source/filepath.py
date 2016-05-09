@@ -28,7 +28,7 @@ class FilePath(object):
 
     @property
     def parent_directory(self):
-        return Filepath(os.path.dirname(self._string))
+        return FilePath(os.path.dirname(self._string))
 
 
     @property
