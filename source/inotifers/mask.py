@@ -121,7 +121,7 @@ class InotifyMask(object):
         return self._mask
 
     @property
-    def humanReadableMask(self):
+    def translation(self):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
@@ -133,7 +133,7 @@ class InotifyMask(object):
         return s
 
     @property
-    def readableMask(self):
+    def flag(self):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.

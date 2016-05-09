@@ -1,7 +1,7 @@
 import os
 import mimetypes
 
-class Filepath(object):
+class FilePath(object):
 
 
     def __init__(self, string=''):

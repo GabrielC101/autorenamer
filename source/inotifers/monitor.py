@@ -10,6 +10,7 @@
 # All rights reserved.
 
 import inotify.adapters
+from event import InotifyEvent
 from os import path
 
 
@@ -20,26 +21,26 @@ class InotifyFileMonitorBase(object):
         #self.initial_watch_path = initial_watch_path
 
         self._event_method_dict ={
-        'IN_ACCESS':self.On_IN_ACCESS,
-        'IN_MODIFY':self.On_IN_MODIFY,
-        'IN_ATTRIB':self.On_IN_ATTRIB,
-        'IN_CLOSE_WRITE':self.On_IN_CLOSE_WRITE,
-        'IN_CLOSE_NOWRITE':self.On_IN_CLOSE_NOWRITE,
-        'IN_OPEN':self.On_IN_OPEN,
-        'IN_MOVED_FROM':self.On_IN_MOVED_FROM,
-        'IN_MOVED_TO':self.On_IN_MOVED_TO,
-        'IN_CREATE':self.On_IN_CREATE,
-        'IN_DELETE':self.On_IN_DELETE,
-        'IN_DELETE_SELF':self.On_IN_DELETE_SELF,
-        'IN_MOVE_SELF':self.On_IN_MOVE_SELF,
-        'IN_UNMOUNT':self.On_IN_UNMOUNT,
-        'IN_Q_OVERFLOW':self.On_IN_Q_OVERFLOW,
-        'IN_IGNORED':self.On_IN_IGNORED,
-        'IN_ONLYDIR':self.On_IN_ONLYDIR,
-        'IN_DONT_FOLLOW':self.On_IN_DONT_FOLLOW,
-        'IN_MASK_ADD':self.On_IN_MASK_ADD,
-        'IN_ISDIR':self.On_IN_ISDIR,
-        'IN_ONESHOT':self.On_IN_ONESHOT
+        'IN_ACCESS':self.on_IN_ACCESS,
+        'IN_MODIFY':self.on_IN_MODIFY,
+        'IN_ATTRIB':self.on_IN_ATTRIB,
+        'IN_CLOSE_WRITE':self.on_IN_CLOSE_WRITE,
+        'IN_CLOSE_NOWRITE':self.on_IN_CLOSE_NOWRITE,
+        'IN_OPEN':self.on_IN_OPEN,
+        'IN_MOVED_FROM':self.on_IN_MOVED_FROM,
+        'IN_MOVED_TO':self.on_IN_MOVED_TO,
+        'IN_CREATE':self.on_IN_CREATE,
+        'IN_DELETE':self.on_IN_DELETE,
+        'IN_DELETE_SELF':self.on_IN_DELETE_SELF,
+        'IN_MOVE_SELF':self.on_IN_MOVE_SELF,
+        'IN_UNMOUNT':self.on_IN_UNMOUNT,
+        'IN_Q_OVERFLOW':self.on_IN_Q_OVERFLOW,
+        'IN_IGNORED':self.on_IN_IGNORED,
+        'IN_ONLYDIR':self.on_IN_ONLYDIR,
+        'IN_DONT_FOLLOW':self.on_IN_DONT_FOLLOW,
+        'IN_MASK_ADD':self.on_IN_MASK_ADD,
+        'IN_ISDIR':self.on_IN_ISDIR,
+        'IN_ONESHOT':self.on_IN_ONESHOT
         }
 
         initial_watch_path = path.abspath(initial_watch_path)
@@ -65,7 +66,7 @@ class InotifyFileMonitorBase(object):
             self.i.remove_watch('./test')
 
     def _allEventsPrivate(self, inotify_event):
-        for r in inotify_event.mask.readable_mask:
+        for r in inotify_event.mask.flag:
             self.allEvents(inotify_event)
             self._event_method_dict[r](inotify_event)
 
