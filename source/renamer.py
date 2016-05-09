@@ -31,6 +31,17 @@ def get_time_string(time_obj):
 
     return time_string
 
+def analyze_files_in_dir(dir):
+    file_list = os.listdir(dir)
+    file_list = [os.path.join(dir, f) for f in file_list]
+    file_dict = {}
+    for f in file_list:
+        f_obj = FilePath(f)
+        name = f_obj.file_name
+        inode_num_m = str(f_obj.inode_num)
+        file_dict[inode_num_m] = name
+    return file_dict
+
 
 class Renamer(InotifyFileMonitorBase):
 
@@ -48,31 +59,24 @@ class Renamer(InotifyFileMonitorBase):
         store_created_file(inode_num, created_path, time_string, watched_dir)
 
     def on_IN_CLOSE_WRITE(self, inotify_event):
-        print 'close write'
-        inode_num = str(inotify_event.file.inode_num)
-        print inode_num
-        a_dict = get_created_file(inode_num)
-        print a_dict
-        watched_dir = a_dict['watched_dir']
-        print watched_dir
-        file_list = os.listdir(watched_dir)
-        file_list = [os.path.join(watched_dir, f) for f in file_list]
-        print file_list
-        file_dict = {}
-        for f in file_list:
-            f_obj = FilePath(f)
-            name = f_obj.file_name
-            inode_num_m = str(f_obj.inode_num)
-            print type(inode_num_m)
-            print type (name)
-            file_dict[inode_num_m] = name
-        print file_dict
+        '''Renames file. Some programs change a files name after it is downloaded. Therefore, it is not acceptable
+        to rely on the file name provided by inotify. This method checks to find the file's new name using the
+        os module.'''
 
-        file_name = file_dict[inode_num]
-        from_path = os.path.join(watched_dir, file_name)
-        to_path = os.path.join(watched_dir, a_dict['time_string'] + '_'+ file_name)
-        print from_path
-        print to_path
+        inode_num = str(inotify_event.file.inode_num)
+
+        # find watched directory
+        a_dict = get_created_file(inode_num)
+        watched_dir = a_dict['watched_dir']
+        time_string = a_dict['time_string']
+
+        file_dict = analyze_files_in_dir(watched_dir)
+
+
+        # change file name
+        current_file_name = file_dict[inode_num]
+        from_path = os.path.join(watched_dir, current_file_name)
+        to_path = os.path.join(watched_dir, time_string + '_'+ current_file_name)
         os.rename(from_path, to_path)
 
 

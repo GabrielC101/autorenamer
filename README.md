@@ -10,6 +10,7 @@ At this time I am the sole developer on this project, and will keep it that way 
 
 Once I'm ready to distribute this project, or collaborate in it's development, I'll license it.
 
+I'm currently  discerning the limitations of various downloaders. 
 
 Copyright (C) 2016 Gabriel R. Curio
 
