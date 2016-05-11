@@ -19,6 +19,7 @@ from autorenamer.filepath import FilePath
 from autorenamer.persistence.set_directory import initialize_autorenamer_dir
 from autorenamer.persistence.data_file import store_created_file
 from autorenamer.persistence.data_file import get_created_file
+from autorenamer.process_query.open_files import is_file_path_open
 
 
 def get_time_string(time_obj):
@@ -60,7 +61,7 @@ class Renamer(InotifyFileMonitorBase):
 
     def on_IN_ATTRIB(self, inotify_event):
         '''Renames file. Some programs change a files name after it is downloaded. Therefore, it is not acceptable
-        to rely on the file name provided by inotify. This method checks to find the file's new name using the
+        to rely on the file name provided by inotify. This method checks inode to find the file's new name using the
         os module.'''
 
         inode_num = str(inotify_event.file.inode_num)
@@ -72,12 +73,15 @@ class Renamer(InotifyFileMonitorBase):
 
         file_dict = analyze_files_in_dir(watched_dir)
 
-
-        # change file name
+        # get file path
         current_file_name = file_dict[inode_num]
         from_path = os.path.join(watched_dir, current_file_name)
-        to_path = os.path.join(watched_dir, time_string + '_'+ current_file_name)
-        os.rename(from_path, to_path)
+
+        # is path currently open? better not be . .
+        is_path_open = is_file_path_open(from_path)
+        if not is_path_open:
+            to_path = os.path.join(watched_dir, time_string + '_'+ current_file_name)
+            os.rename(from_path, to_path)
 
 
 def main(folder_to_monitor):
