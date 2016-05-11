@@ -58,7 +58,7 @@ class Renamer(InotifyFileMonitorBase):
         watched_dir = watched_dir_obj.absolute_path
         store_created_file(inode_num, created_path, time_string, watched_dir)
 
-    def on_IN_CLOSE_WRITE(self, inotify_event):
+    def on_IN_ATTRIB(self, inotify_event):
         '''Renames file. Some programs change a files name after it is downloaded. Therefore, it is not acceptable
         to rely on the file name provided by inotify. This method checks to find the file's new name using the
         os module.'''
